@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components:SoftwareArchitecture xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:components="components">
+  <SAElements xsi:type="components:Component" name="TemperatureSensor">
+    <ports xsi:type="components:OutMessagePort"/>
+    <ports xsi:type="components:OutMessagePort"/>
+    <modes xsi:type="components:InitialMode">
+      <behaviouralElements xsi:type="components:StartTimer" name="TemperatureTimer" cyclic="true" period="10000"/>
+      <behaviouralElements xsi:type="components:SenseTemperature" name="SenseTemperature" outgoing="//@SAElements.0/@modes.0/@behaviouralElements.5" incoming="//@SAElements.0/@modes.0/@behaviouralElements.4" dataRecipient="//@SAElements.0/@applicationData.0"/>
+      <behaviouralElements xsi:type="components:TimerFired" outgoing="//@SAElements.0/@modes.0/@behaviouralElements.4" timer="//@SAElements.0/@modes.0/@behaviouralElements.0"/>
+      <behaviouralElements xsi:type="components:UnicastSendMessage" name="TemperatureValue" incoming="//@SAElements.0/@modes.0/@behaviouralElements.5" data="Temperature" dataRecipient="//@SAElements.0/@applicationData.0"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.0/@modes.0/@behaviouralElements.2" target="//@SAElements.0/@modes.0/@behaviouralElements.1"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.0/@modes.0/@behaviouralElements.1" target="//@SAElements.0/@modes.0/@behaviouralElements.3"/>
+    </modes>
+    <applicationData xsi:type="components:PrimitiveDataDeclaration" dataName="Temperature" value="0.0" type="real"/>
+  </SAElements>
+  <SAElements xsi:type="components:Component" name="Server">
+    <ports xsi:type="components:InMessagePort"/>
+    <modes xsi:type="components:InitialMode">
+      <behaviouralElements xsi:type="components:Server" name="Server" outgoing="//@SAElements.1/@modes.0/@behaviouralElements.4" incoming="//@SAElements.1/@modes.0/@behaviouralElements.3"/>
+      <behaviouralElements xsi:type="components:StoreData" incoming="//@SAElements.1/@modes.0/@behaviouralElements.4"/>
+      <behaviouralElements xsi:type="components:ReceiveMessage" name="ReciveTemperature" outgoing="//@SAElements.1/@modes.0/@behaviouralElements.3" dataRecipientName="Temperature" fromMessagePorts="//@SAElements.1/@ports.0" dataRecipient="//@SAElements.0/@applicationData.0"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.1/@modes.0/@behaviouralElements.2" target="//@SAElements.1/@modes.0/@behaviouralElements.0"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.1/@modes.0/@behaviouralElements.0" target="//@SAElements.1/@modes.0/@behaviouralElements.1"/>
+    </modes>
+  </SAElements>
+  <SAElements xsi:type="components:Connection" source="//@SAElements.0/@ports.0" target="//@SAElements.1/@ports.0"/>
+  <SAElements xsi:type="components:Component" name="Controller">
+    <ports xsi:type="components:OutMessagePort"/>
+    <ports xsi:type="components:OutMessagePort"/>
+    <ports xsi:type="components:InMessagePort"/>
+    <modes xsi:type="components:InitialMode">
+      <behaviouralElements xsi:type="components:ReceiveMessage" name="ReciveTemperature" outgoing="//@SAElements.3/@modes.0/@behaviouralElements.2" dataRecipientName="Temperature" dataRecipient="//@SAElements.0/@applicationData.0"/>
+      <behaviouralElements xsi:type="components:Choice" outgoing="//@SAElements.3/@modes.0/@behaviouralElements.5 //@SAElements.3/@modes.0/@behaviouralElements.6" incoming="//@SAElements.3/@modes.0/@behaviouralElements.2"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.3/@modes.0/@behaviouralElements.0" target="//@SAElements.3/@modes.0/@behaviouralElements.1"/>
+      <behaviouralElements xsi:type="components:UnicastSendMessage" name="sendOpen" incoming="//@SAElements.3/@modes.0/@behaviouralElements.5" data="Open" toMessagePorts="//@SAElements.3/@ports.1" dataRecipient="//@SAElements.3/@applicationData.1"/>
+      <behaviouralElements xsi:type="components:UnicastSendMessage" name="sendClose" incoming="//@SAElements.3/@modes.0/@behaviouralElements.6" data="Close" toMessagePorts="//@SAElements.3/@ports.0" dataRecipient="//@SAElements.3/@applicationData.0"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.3/@modes.0/@behaviouralElements.1" target="//@SAElements.3/@modes.0/@behaviouralElements.3" condition="Temperature>25"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.3/@modes.0/@behaviouralElements.1" target="//@SAElements.3/@modes.0/@behaviouralElements.4" condition="Temperature&lt;18"/>
+    </modes>
+    <applicationData xsi:type="components:PrimitiveDataDeclaration" dataName="Close" value="false" type="boolean"/>
+    <applicationData xsi:type="components:PrimitiveDataDeclaration" dataName="Open" value="true" type="boolean"/>
+  </SAElements>
+  <SAElements xsi:type="components:Connection" source="//@SAElements.0/@ports.1" target="//@SAElements.3/@ports.2"/>
+  <SAElements xsi:type="components:Component" name="WindowActuator">
+    <ports xsi:type="components:InMessagePort"/>
+    <ports xsi:type="components:InMessagePort"/>
+    <modes xsi:type="components:InitialMode">
+      <behaviouralElements xsi:type="components:ReceiveMessage" name="reciveOpen" outgoing="//@SAElements.5/@modes.0/@behaviouralElements.3" dataRecipientName="Open" fromMessagePorts="//@SAElements.5/@ports.1" dataRecipient="//@SAElements.3/@applicationData.1"/>
+      <behaviouralElements xsi:type="components:ReceiveMessage" name="reciveClose" outgoing="//@SAElements.5/@modes.0/@behaviouralElements.4" dataRecipientName="Close" fromMessagePorts="//@SAElements.5/@ports.0" dataRecipient="//@SAElements.3/@applicationData.0"/>
+      <behaviouralElements xsi:type="components:Actuate" name="WindowAcuator" incoming="//@SAElements.5/@modes.0/@behaviouralElements.3 //@SAElements.5/@modes.0/@behaviouralElements.4" data="Actuate"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.5/@modes.0/@behaviouralElements.0" target="//@SAElements.5/@modes.0/@behaviouralElements.2" condition="Open"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.5/@modes.0/@behaviouralElements.1" target="//@SAElements.5/@modes.0/@behaviouralElements.2" condition="Close"/>
+    </modes>
+  </SAElements>
+  <SAElements xsi:type="components:Connection" source="//@SAElements.3/@ports.1" target="//@SAElements.5/@ports.1"/>
+  <SAElements xsi:type="components:Connection" source="//@SAElements.3/@ports.0" target="//@SAElements.5/@ports.0"/>
+</components:SoftwareArchitecture>
