@@ -3,17 +3,17 @@ from pypdevs.infinity import INFINITY
 import random
 import time
 
-class WaterQualitySensorState:
+class IoTSensorState:
     def __init__(self):
         self.next_reading_time = 1.0  
         self.sensor_id = "Sensor_01" 
         self.data_to_send = None  
 
-class WaterQualitySensor(AtomicDEVS):
+class IoTNode(AtomicDEVS):
     def __init__(self, name, data_interval=1.0):
         AtomicDEVS.__init__(self, name)
         self.data_interval = data_interval
-        self.state = WaterQualitySensorState()
+        self.state = IoTSensorState()
         self.timeLast = 0.0
         self.inport = self.addInPort("in")
         self.outport = self.addOutPort("out")

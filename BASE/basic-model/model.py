@@ -1,16 +1,15 @@
 from pypdevs.DEVS import CoupledDEVS
-
-from water_quality_node import WaterQualitySensor
+from iot_node import IoTNode
 from onem2m_interface import OneM2MInterface
 from sink import Sink
 
-class WaterQualityModel(CoupledDEVS):
+class IoTNodeModel(CoupledDEVS):
     def __init__(self):
-        CoupledDEVS.__init__(self, "WaterQualityModel")
+        CoupledDEVS.__init__(self, "IoTNodeModel")
         print("Model Loaded")
 
-        print("Initializing Water Quality Sensor")
-        self.sensor = self.addSubModel(WaterQualitySensor("WM-WD-KH98-00", data_interval=3600)) # 1 hour
+        print("Initializing IoT Sensor")
+        self.sensor = self.addSubModel(IoTNode("WM-WD-KH98-00", data_interval=3600)) # 1 hour
         
         print("Initializing OneM2M Interface")
         self.onem2m = self.addSubModel(OneM2MInterface(simulated_delay=1))

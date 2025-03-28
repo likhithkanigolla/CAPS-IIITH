@@ -1,5 +1,5 @@
 from pypdevs.simulator import Simulator
-from model import WaterQualityModel
+from model import IoTNodeModel
 import logging
 
 
@@ -10,7 +10,7 @@ if __name__ == '__main__':
     
     logging.debug("Starting the model")
     
-    model = WaterQualityModel()
+    model = IoTNodeModel()
     logging.debug("Model Loaded")
     
     sim = Simulator(model)
