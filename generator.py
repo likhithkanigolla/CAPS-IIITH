@@ -424,11 +424,10 @@ class {component['name'].replace(' ', '')}(AtomicDEVS):
         
         if sensor_type == "temperature":
             value_generator = "random.uniform(15.0, 30.0)"  # Temperature in Celsius
-            unit = "C"
         else:
             value_generator = "random.uniform(0, 100)"
-            unit = ""
         
+        # Remove the unit suffix from all data strings
         f.write(f"""
 
         self.state.data_to_send = {{
@@ -438,7 +437,7 @@ class {component['name'].replace(' ', '')}(AtomicDEVS):
                     f"{{self.name}}",
                     "V1.0.0"
                  ],
-                 "con": f"{{self.state.sensor_id}}, {{int(time.time())}}, {{{value_generator}}}{unit}",
+                 "con": f"{{self.state.sensor_id}}, {{int(time.time())}}, {{{value_generator}}}",
             }}
         }}
 
@@ -458,7 +457,7 @@ class {component['name'].replace(' ', '')}(AtomicDEVS):
                     f"{{self.name}}",
                     "V1.0.0"
                  ],
-                 "con": f"{{self.state.sensor_id}}, {{int(time.time())}}, {{{value_generator}}}{unit}",
+                 "con": f"{{self.state.sensor_id}}, {{int(time.time())}}, {{{value_generator}}}",
             }}
         }}
         return self.state
@@ -477,7 +476,7 @@ class {component['name'].replace(' ', '')}(AtomicDEVS):
                     f"{{self.name}}",
                     "V1.0.0"
                  ],
-                 "con": f"{{self.state.sensor_id}}, {{int(time.time())}}, {{{value_generator}}}{unit}",
+                 "con": f"{{self.state.sensor_id}}, {{int(time.time())}}, {{{value_generator}}}",
             }}
         }}
         print(f"[{{self.name}}] outputFnc called. Sending data: {{data}}")""")
