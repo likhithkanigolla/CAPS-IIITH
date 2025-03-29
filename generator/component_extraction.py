@@ -50,12 +50,24 @@ def extract_components(saml_file_path=None, hwml_file_path=None):
                         
                         # Extract behavior if available
                         behaviors = []
+                        data_interval = None  # Default to None
                         for mode in element.findall('./modes', namespaces):
                             debug_print(f"  Found mode for {component_name}")
                             for behavior in mode.findall('./behaviouralElements', namespaces):
                                 behavior_type = behavior.get(f'{{{namespaces["xsi"]}}}type', '')
                                 behavior_name = behavior.get('name', '')
                                 debug_print(f"    Behavior: {behavior_name} (Type: {behavior_type})")
+                                
+                                # Check for StartTimer behavior and extract period
+                                if behavior_type == "components:StartTimer":
+                                    period = behavior.get('period')
+                                    if period:
+                                        try:
+                                            data_interval = int(period) / 1000.0  # Convert milliseconds to seconds
+                                            debug_print(f"    Found StartTimer with period: {data_interval} seconds")
+                                        except ValueError:
+                                            debug_print(f"    Invalid period value: {period}")
+                                
                                 if behavior_type:
                                     behaviors.append({
                                         'type': behavior_type.split(':')[-1],
@@ -75,6 +87,7 @@ def extract_components(saml_file_path=None, hwml_file_path=None):
                             'in_ports': in_ports,
                             'out_ports': out_ports,
                             'behaviors': behaviors,
+                            'data_interval': data_interval,  # Add data_interval to the component
                             'source': 'saml'
                         })
         except Exception as e:

@@ -200,6 +200,10 @@ def generate_sensor_file(component, output_dir):
 # Routing: {component.get('routing', 'Unknown')}"""
         debug_print(f"Including hardware details for {component['name']}")
     
+    # Use the data_interval from the component, default to 1.0 if not provided
+    data_interval = component.get('data_interval', 1.0)
+    debug_print(f"Using data_interval: {data_interval} seconds for {component['name']}")
+    
     with open(filepath, 'w') as f:
         f.write(f"""from pypdevs.DEVS import AtomicDEVS
 from pypdevs.infinity import INFINITY
@@ -214,7 +218,7 @@ class {component['name'].replace(' ', '')}State:
         self.data_to_send = None  
 
 class {component['name'].replace(' ', '')}(AtomicDEVS):
-    def __init__(self, name, data_interval=1.0):
+    def __init__(self, name, data_interval={data_interval}):
         AtomicDEVS.__init__(self, name)
         self.data_interval = data_interval
         self.state = {component['name'].replace(' ', '')}State()
@@ -442,8 +446,9 @@ def generate_model_file(components, connections, output_dir):
             class_name = component['name'].replace(' ', '')
             
             if component['type'] == 'sensor':
+                data_interval = component.get('data_interval', 5.0)  # Default to 10 if not provided
                 f.write(f"        print(\"Initializing {component['name']}\")\n")
-                f.write(f"        self.{var_name} = self.addSubModel({class_name}(\"{component['name']}\", data_interval=10))\n\n")
+                f.write(f"        self.{var_name} = self.addSubModel({class_name}(\"{component['name']}\", data_interval={data_interval}))\n\n")
             elif component['type'] == 'actuator':
                 f.write(f"        print(\"Initializing {component['name']}\")\n")
                 f.write(f"        self.{var_name} = self.addSubModel({class_name}(simulated_delay=0.1))\n\n")
