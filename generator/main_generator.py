@@ -18,7 +18,7 @@ from generator.file_generators import (
     generate_readme_file
 )
 from generator.debug_utils import debug_print, log_exception
-from parse_connections import parse_connections
+from generator.parse_connections import parse_connections
 
 def generate_pydevs_files(saml_file_path=None, hwml_file_path=None):
     """Main function to generate PyDEVS files from XML input."""

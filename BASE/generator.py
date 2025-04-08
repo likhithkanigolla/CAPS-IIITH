@@ -3,7 +3,7 @@ import sys
 import xml.etree.ElementTree as ET
 import datetime
 import shutil
-from parse_connections import parse_connections
+from generator.parse_connections import parse_connections
 import traceback
 
 # Enable debug mode - set to True for detailed debug output

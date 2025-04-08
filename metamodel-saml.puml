@@ -1,0 +1,87 @@
+@startuml SAML_Metamodel
+
+' Enumerations
+enum PrimitiveType {
+  integer
+  boolean
+  real
+  string
+}
+
+' External Metaclasses (green)
+class BehaviouralElement <<external>> {
+  name : string
+}
+
+class DataDeclaration <<external>> {
+  dataName : string
+}
+
+class Expression
+
+' Internal Metaclasses
+class Mode {
+  name : string
+}
+
+class InitialMode
+
+class EnterMode
+
+class ExitMode
+
+class StructuredDataDeclaration
+
+class PrimitiveDataDeclaration {
+  type : PrimitiveType
+}
+
+class SoftwareArchitecture {
+  name : string
+}
+
+class SAEElement
+
+class Component {
+  name : string
+}
+
+class Connection
+
+class MessagePort {
+  name : string
+}
+
+class InMessagePort
+
+class OutMessagePort
+
+' Relationships
+
+Mode --> "0..*" BehaviouralElement : behaviouralElements
+Mode "0..*" <-- "1" EnterMode : entries
+Mode "0..*" <-- "0..*" ExitMode : exits
+Mode --> "0..*" Component : modes
+EnterMode --> "1" Mode : targetMode
+ExitMode --> "1" Mode : targetMode
+
+Component --> "0..*" DataDeclaration : applicationData
+Component --> "0..*" MessagePort : ports
+
+PrimitiveDataDeclaration --> PrimitiveType : type
+StructuredDataDeclaration --> DataDeclaration
+
+Expression --> "1" PrimitiveDataDeclaration : type
+Expression --> "0..1" Expression : value
+
+SoftwareArchitecture --> "0..*" SAEElement : SAEElements
+Component --> SAEElement
+Connection --> SAEElement
+
+Connection --> "1" OutMessagePort : source
+Connection --> "1" InMessagePort : target
+
+InMessagePort -up-|> MessagePort
+OutMessagePort -up-|> MessagePort
+
+@enduml

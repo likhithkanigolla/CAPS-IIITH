@@ -630,3 +630,75 @@ If the simulation fails, check the following:
     
     debug_print(f"Generated README file: {filepath}")
     return filename
+
+def generate_hwml_details(hwml_file):
+    """Extract hardware details from HWML file if provided."""
+    if not hwml_file or not os.path.exists(hwml_file):
+        return {}
+    
+    try:
+        from .saml_parser import parse_hwml_file
+        return parse_hwml_file(hwml_file)
+    except Exception as e:
+        debug_print(f"Error parsing HWML file: {str(e)}")
+        return {}
+
+def generate_pydevs_from_saml(saml_file, hwml_file=None, output_dir=None):
+    """Generate PyDEVS files from SAML and optional HWML file."""
+    if not output_dir:
+        output_dir = os.path.join(os.path.dirname(saml_file), "generated_pydevs")
+    
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
+    debug_print(f"Generating PyDEVS files from SAML: {saml_file}")
+    debug_print(f"Output directory: {output_dir}")
+    
+    # Parse SAML file to extract components and connections
+    from .saml_parser import parse_saml_file
+    components, connections = parse_saml_file(saml_file)
+    
+    # Extract hardware details if HWML file is provided
+    hw_details = generate_hwml_details(hwml_file)
+    
+    # Add hardware details to components if available
+    for component in components:
+        if component['name'] in hw_details:
+            component['hw_details'] = hw_details[component['name']]
+    
+    # Generate files based on component types
+    generated_files = []
+    for component in components:
+        debug_print(f"Generating files for component: {component['name']} (Type: {component['type']})")
+        
+        if component['type'] == 'sensor':
+            filename = generate_sensor_file(component, output_dir)
+            generated_files.append(filename)
+        elif component['type'] == 'actuator':
+            filename = generate_actuator_file(component, output_dir)
+            generated_files.append(filename)
+        elif component['type'] == 'controller':
+            filename = generate_controller_file(component, output_dir)
+            generated_files.append(filename)
+        elif component['type'] == 'interface':
+            filename = generate_interface_file(component, output_dir)
+            generated_files.append(filename)
+    
+    # Generate the sink file
+    sink_file = generate_sink_file(output_dir)
+    generated_files.append(sink_file)
+    
+    # Generate the model file
+    model_file = generate_model_file(components, connections, output_dir)
+    generated_files.append(model_file)
+    
+    # Generate the experiment file
+    experiment_file = generate_experiment_file(output_dir)
+    generated_files.append(experiment_file)
+    
+    # Generate the README file
+    readme_file = generate_readme_file(components, connections, saml_file, hwml_file, output_dir)
+    generated_files.append(readme_file)
+    
+    debug_print(f"Successfully generated {len(generated_files)} files in {output_dir}")
+    return generated_files
