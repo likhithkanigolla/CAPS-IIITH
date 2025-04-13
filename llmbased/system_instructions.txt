@@ -1,0 +1,123 @@
+You are given a `.capssaml` file written using the CAPS framework.
+
+Your task is to parse the XML file and produce a **clean, structured JSON** that includes:
+- Component IDs
+- Well-separated component definitions
+- System-level connections between components
+- Relevant metadata for behavior and data modeling
+
+---
+
+### 📦 **Output JSON Structure Specification:**
+
+```json
+{
+  "components": [
+    {
+      "id": "c1",
+      "name": "TemperatureSensor",
+      "type": "atomic",
+      "role": "sensor",
+      "ports": {
+        "in": [],
+        "out": ["out_0", "out_1"]
+      },
+      "parameters": {
+        "Temperature": {
+          "type": "real",
+          "initialValue": 0.0
+        }
+      },
+      "timers": [
+        {
+          "name": "TemperatureTimer",
+          "cyclic": true,
+          "period": 10000
+        }
+      ],
+      "behaviour": [
+        {
+          "type": "StartTimer",
+          "name": "TemperatureTimer"
+        },
+        {
+          "type": "SenseTemperature",
+          "name": "SenseTemperature",
+          "incoming": "TimerFired",
+          "outgoing": "TemperatureValue",
+          "dataRecipient": "Temperature"
+        },
+        {
+          "type": "UnicastSendMessage",
+          "name": "TemperatureValue",
+          "incoming": "SenseTemperature",
+          "data": "Temperature",
+          "dataRecipient": "Temperature"
+        }
+      ],
+      "connectionsInternal": [
+        {
+          "from": "TimerFired",
+          "to": "SenseTemperature"
+        },
+        {
+          "from": "SenseTemperature",
+          "to": "TemperatureValue"
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "c1.out_0",
+      "to": "c2.in_0"
+    },
+    {
+      "from": "c1.out_1",
+      "to": "c3.in_0"
+    }
+  ],
+  "metadata": {
+    "system": "Sensor → Controller → Server → Sink",
+    "generatedFor": "PyDEVS",
+    "timestamp": "auto-generated"
+  }
+}
+```
+
+---
+
+### 🔍 **Rules & Expectations:**
+
+1. **Assign an `"id"`** to each component (`c1`, `c2`, ...) and use it in inter-component `connections`.
+2. **Classify components** by **role**:
+   - `"sensor"` – for sensing nodes
+   - `"controller"` – for decision logic
+   - `"database"` or `"server"` – for processing/storage
+   - `"actuator"` or `"sink"` – for effectors/output nodes
+3. Parse:
+   - **Timers**
+   - **Behavioral elements**
+   - **Application data (parameters)**
+   - **Links as internal connections**
+4. If `Link` has `condition`, include it as:
+   ```json
+   "condition": {
+     "left": "Temperature",
+     "operator": ">",
+     "right": 25
+   }
+   ```
+5. Place **inter-component links** under `connections`.
+
+---
+
+### ✅ **Goal**:
+This structured JSON should be directly usable for generating **PyDEVS atomic and coupled models**, where:
+- Each `component` becomes an atomic or coupled DEVS model
+- `connections` define couplings
+- `behaviour` drives state transitions or internal message passing
+- `parameters` help initialize internal states
+- `timers` guide time advances or periodic triggering
+
+YOU MUST OUTPUT ONLY VALID JSON WITHOUT ANY EXPLANATORY TEXT, COMMENTS, OR MARKDOWN. THE OUTPUT MUST BE PARSABLE AS JSON.

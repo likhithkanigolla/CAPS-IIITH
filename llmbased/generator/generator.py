@@ -2,8 +2,8 @@ import json
 import os
 import sys
 import datetime
-from model_generator import generate_component_class, generate_coupled_model
-from experiment_generator import generate_experiment
+from generator.model_generator import generate_component_class, generate_coupled_model
+from generator.experiment_generator import generate_experiment
 
 def ensure_directory(directory):
     """Create directory if it doesn't exist"""
