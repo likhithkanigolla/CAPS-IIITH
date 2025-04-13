@@ -1,0 +1,248 @@
+{
+	"components": [
+	  {
+		"id": "c1",
+		"name": "TemperatureSensor",
+		"type": "atomic",
+		"role": "sensor",
+		"ports": {
+		  "in": [],
+		  "out": ["out_0", "out_1"]
+		},
+		"parameters": {
+		  "Temperature": {
+			"type": "real",
+			"initialValue": 0.0
+		  }
+		},
+		"timers": [
+		  {
+			"name": "TemperatureTimer",
+			"cyclic": true,
+			"period": 10000
+		  }
+		],
+		"behaviour": [
+		  {
+			"type": "StartTimer",
+			"name": "TemperatureTimer"
+		  },
+		  {
+			"type": "SenseTemperature",
+			"name": "SenseTemperature",
+			"incoming": "TimerFired",
+			"outgoing": "TemperatureValue",
+			"dataRecipient": "Temperature"
+		  },
+		  {
+			"type": "TimerFired",
+			"outgoing": "SenseTemperature",
+			"timer": "TemperatureTimer"
+		  },
+		  {
+			"type": "UnicastSendMessage",
+			"name": "TemperatureValue",
+			"incoming": "SenseTemperature",
+			"data": "Temperature",
+			"dataRecipient": "Temperature"
+		  }
+		],
+		"connectionsInternal": [
+		  {
+			"from": "TimerFired",
+			"to": "SenseTemperature"
+		  },
+		  {
+			"from": "SenseTemperature",
+			"to": "TemperatureValue"
+		  }
+		]
+	  },
+	  {
+		"id": "c2",
+		"name": "Server",
+		"type": "atomic",
+		"role": "server",
+		"ports": {
+		  "in": ["in_0"],
+		  "out": []
+		},
+		"parameters": {},
+		"timers": [],
+		"behaviour": [
+		  {
+			"type": "Server",
+			"name": "Server",
+			"incoming": "ReciveTemperature",
+			"outgoing": "StoreData"
+		  },
+		  {
+			"type": "StoreData",
+			"incoming": "Server"
+		  },
+		  {
+			"type": "ReceiveMessage",
+			"name": "ReciveTemperature",
+			"outgoing": "Server",
+			"dataRecipientName": "Temperature",
+			"dataRecipient": "Temperature"
+		  }
+		],
+		"connectionsInternal": [
+		  {
+			"from": "ReciveTemperature",
+			"to": "Server"
+		  },
+		  {
+			"from": "Server",
+			"to": "StoreData"
+		  }
+		]
+	  },
+	  {
+		"id": "c3",
+		"name": "Controller",
+		"type": "atomic",
+		"role": "controller",
+		"ports": {
+		  "in": ["in_0"],
+		  "out": ["out_0", "out_1"]
+		},
+		"parameters": {
+		  "Close": {
+			"type": "boolean",
+			"initialValue": false
+		  },
+		  "Open": {
+			"type": "boolean",
+			"initialValue": true
+		  }
+		},
+		"timers": [],
+		"behaviour": [
+		  {
+			"type": "ReceiveMessage",
+			"name": "ReciveTemperature",
+			"outgoing": "Choice",
+			"dataRecipientName": "Temperature",
+			"dataRecipient": "Temperature"
+		  },
+		  {
+			"type": "Choice",
+			"outgoing": ["sendOpen", "sendClose"],
+			"incoming": "ReciveTemperature"
+		  },
+		  {
+			"type": "UnicastSendMessage",
+			"name": "sendOpen",
+			"incoming": "Choice",
+			"data": "Open",
+			"dataRecipient": "Open"
+		  },
+		  {
+			"type": "UnicastSendMessage",
+			"name": "sendClose",
+			"incoming": "Choice",
+			"data": "Close",
+			"dataRecipient": "Close"
+		  }
+		],
+		"connectionsInternal": [
+		  {
+			"from": "ReciveTemperature",
+			"to": "Choice"
+		  },
+		  {
+			"from": "Choice",
+			"to": "sendOpen",
+			"condition": {
+			  "left": "Temperature",
+			  "operator": ">",
+			  "right": 25
+			}
+		  },
+		  {
+			"from": "Choice",
+			"to": "sendClose",
+			"condition": {
+			  "left": "Temperature",
+			  "operator": "<",
+			  "right": 18
+			}
+		  }
+		]
+	  },
+	  {
+		"id": "c4",
+		"name": "WindowActuator",
+		"type": "atomic",
+		"role": "actuator",
+		"ports": {
+		  "in": ["in_0", "in_1"],
+		  "out": []
+		},
+		"parameters": {},
+		"timers": [],
+		"behaviour": [
+		  {
+			"type": "ReceiveMessage",
+			"name": "reciveOpen",
+			"outgoing": "Actuate",
+			"dataRecipientName": "Open",
+			"dataRecipient": "Open"
+		  },
+		  {
+			"type": "ReceiveMessage",
+			"name": "reciveClose",
+			"outgoing": "Actuate",
+			"dataRecipientName": "Close",
+			"dataRecipient": "Close"
+		  },
+		  {
+			"type": "Actuate",
+			"name": "WindowAcuator",
+			"incoming": ["reciveOpen", "reciveClose"],
+			"data": "Actuate"
+		  }
+		],
+		"connectionsInternal": [
+		  {
+			"from": "reciveOpen",
+			"to": "Actuate",
+			"condition": {
+			  "left": "Open",
+			  "operator": null,
+			  "right": null
+			}
+		  },
+		  {
+			"from": "reciveClose",
+			"to": "Actuate",
+			"condition": {
+			  "left": "Close",
+			  "operator": null,
+			  "right": null
+			}
+		  }
+		]
+	  }
+	],
+	"connections": [
+	  {
+		"from": "c1.out_0",
+		"to": "c2.in_0"
+	  },
+	  {
+		"from": "c1.out_1",
+		"to": "c3.in_0"
+	  },
+	  {
+		"from": "c3.out_1",
+		"to": "c4.in_1"
+	  },
+	  {
+		"from": "c3.out_0",
+		"to": "c4.in_0"
+	  }
+	]
+  }
