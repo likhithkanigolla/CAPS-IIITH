@@ -1,0 +1,314 @@
+{
+    "components": [
+      {
+        "id": "c1",
+        "name": "Component",
+        "type": "atomic",
+        "role": "controller",
+        "ports": {
+          "in": [],
+          "out": [
+            "out_0",
+            "out_1"
+          ]
+        },
+        "parameters": {},
+        "timers": [],
+        "behaviour": [
+          {
+            "type": "Choice",
+            "outgoing": [
+              "//@SAElements.0/@modes.0/@behaviouralElements.2",
+              "//@SAElements.0/@modes.0/@behaviouralElements.3"
+            ]
+          },
+          {
+            "type": "UnicastSendMessage",
+            "name": "1",
+            "incoming": "//@SAElements.0/@modes.0/@behaviouralElements.3",
+            "data": "msg",
+            "dataRecipient": ""
+          },
+          {
+            "type": "Choice",
+            "outgoing": [
+              "//@SAElements.0/@modes.1/@behaviouralElements.5",
+              "//@SAElements.0/@modes.1/@behaviouralElements.8"
+            ],
+            "incoming": "//@SAElements.0/@modes.1/@behaviouralElements.1"
+          },
+          {
+            "type": "Choice",
+            "outgoing": [
+              "//@SAElements.0/@modes.1/@behaviouralElements.6",
+              "//@SAElements.0/@modes.1/@behaviouralElements.9"
+            ],
+            "incoming": "//@SAElements.0/@modes.1/@behaviouralElements.8"
+          },
+          {
+            "type": "Choice",
+            "name": "",
+            "outgoing": [
+              "//@SAElements.0/@modes.1/@behaviouralElements.7",
+              "//@SAElements.0/@modes.1/@behaviouralElements.11"
+            ],
+            "incoming": "//@SAElements.0/@modes.1/@behaviouralElements.9"
+          },
+          {
+            "type": "UnicastSendMessage",
+            "name": "2 ",
+            "incoming": [
+              "//@SAElements.0/@modes.1/@behaviouralElements.5",
+              "//@SAElements.0/@modes.1/@behaviouralElements.6",
+              "//@SAElements.0/@modes.1/@behaviouralElements.7"
+            ],
+            "data": "msg",
+            "dataRecipient": ""
+          },
+          {
+            "type": "UnicastSendMessage",
+            "name": "3",
+            "incoming": "//@SAElements.0/@modes.1/@behaviouralElements.11",
+            "data": "msg",
+            "dataRecipient": ""
+          },
+          {
+            "type": "SmartCard",
+            "outgoing": "//@SAElements.0/@modes.2/@behaviouralElements.3"
+          },
+          {
+            "type": "ReadSmartCard",
+            "name": "Read",
+            "outgoing": "//@SAElements.0/@modes.2/@behaviouralElements.4",
+            "incoming": "//@SAElements.0/@modes.2/@behaviouralElements.3",
+            "dataDeclarationName": "SCL, CID",
+            "data": ""
+          },
+          {
+            "type": "CountPeople",
+            "name": "get",
+            "outgoing": "//@SAElements.0/@modes.2/@behaviouralElements.5",
+            "incoming": "//@SAElements.0/@modes.2/@behaviouralElements.4",
+            "dataDeclarationName": "count",
+            "data": ""
+          }
+        ],
+        "connectionsInternal": [
+          {
+            "from": "//@SAElements.0/@modes.0/@behaviouralElements.0",
+            "to": "//@SAElements.0/@modes.0/@exits.0",
+            "condition": "Valid"
+          },
+          {
+            "from": "//@SAElements.0/@modes.0/@behaviouralElements.0",
+            "to": "//@SAElements.0/@modes.0/@behaviouralElements.1",
+            "condition": "msg=\"InvalidValue\""
+          },
+          {
+            "from": "//@SAElements.0/@modes.1/@entries.0",
+            "to": "//@SAElements.0/@modes.1/@behaviouralElements.0",
+            "condition": "Count<RoomCapacity"
+          },
+          {
+            "from": "//@SAElements.0/@modes.1/@behaviouralElements.0",
+            "to": "//@SAElements.0/@modes.1/@behaviouralElements.4",
+            "condition": "false,msg=\"Room Full\""
+          },
+          {
+            "from": "//@SAElements.0/@modes.1/@behaviouralElements.2",
+            "to": "//@SAElements.0/@modes.1/@behaviouralElements.4",
+            "condition": "false, msg=\"access not allowed\""
+          },
+          {
+            "from": "//@SAElements.0/@modes.1/@behaviouralElements.3",
+            "to": "//@SAElements.0/@modes.1/@behaviouralElements.4",
+            "condition": "false, msg=\"access not allowed\""
+          },
+          {
+            "from": "//@SAElements.0/@modes.1/@behaviouralElements.0",
+            "to": "//@SAElements.0/@modes.1/@behaviouralElements.2",
+            "condition": "SClevel>=SCRElevel"
+          },
+          {
+            "from": "//@SAElements.0/@modes.1/@behaviouralElements.2",
+            "to": "//@SAElements.0/@modes.1/@behaviouralElements.3",
+            "condition": "CurrentTime>PDTBeginn&&CurrentTime<PDTend"
+          },
+          {
+            "from": "//@SAElements.0/@modes.1/@behaviouralElements.3",
+            "to": "//@SAElements.0/@modes.1/@behaviouralElements.10",
+            "condition": "true,msg=\"Active\""
+          },
+          {
+            "from": "//@SAElements.0/@modes.2/@behaviouralElements.0",
+            "to": "//@SAElements.0/@modes.2/@behaviouralElements.1"
+          },
+          {
+            "from": "//@SAElements.0/@modes.2/@behaviouralElements.1",
+            "to": "//@SAElements.0/@modes.2/@behaviouralElements.2"
+          },
+          {
+            "from": "//@SAElements.0/@modes.2/@behaviouralElements.2",
+            "to": "//@SAElements.0/@modes.2/@exits.0"
+          }
+        ]
+      },
+      {
+        "id": "c2",
+        "name": "Component",
+        "type": "atomic",
+        "role": "sink",
+        "ports": {
+          "in": [
+            "in_0"
+          ],
+          "out": []
+        },
+        "parameters": {},
+        "timers": [],
+        "behaviour": [
+          {
+            "type": "ReceiveMessage",
+            "outgoing": "//@SAElements.1/@modes.0/@behaviouralElements.2",
+            "dataRecipient": "msg"
+          },
+          {
+            "type": "TouchScreen",
+            "name": "display(msg)",
+            "incoming": "//@SAElements.1/@modes.0/@behaviouralElements.2"
+          }
+        ],
+        "connectionsInternal": [
+          {
+            "from": "//@SAElements.1/@modes.0/@behaviouralElements.0",
+            "to": "//@SAElements.1/@modes.0/@behaviouralElements.1"
+          }
+        ]
+      },
+      {
+        "id": "c3",
+        "name": "Component",
+        "type": "atomic",
+        "role": "actuator",
+        "ports": {
+          "in": [
+            "in_0"
+          ],
+          "out": [
+            "out_0"
+          ]
+        },
+        "parameters": {},
+        "timers": [
+          {
+            "name": "openTimer",
+            "cyclic": true,
+            "period": 10000
+          }
+        ],
+        "behaviour": [
+          {
+            "type": "TimerFired",
+            "name": "",
+            "outgoing": "//@SAElements.2/@modes.0/@behaviouralElements.5",
+            "timerName": "openTimer"
+          },
+          {
+            "type": "Join",
+            "outgoing": [
+              "//@SAElements.2/@modes.0/@behaviouralElements.9",
+              "//@SAElements.2/@modes.0/@behaviouralElements.10"
+            ],
+            "incoming": "//@SAElements.2/@modes.0/@behaviouralElements.5"
+          },
+          {
+            "type": "Join",
+            "name": "",
+            "outgoing": [
+              "//@SAElements.2/@modes.0/@behaviouralElements.11",
+              "//@SAElements.2/@modes.0/@behaviouralElements.12"
+            ],
+            "incoming": "//@SAElements.2/@modes.0/@behaviouralElements.4"
+          },
+          {
+            "type": "ReceiveMessage",
+            "name": "",
+            "outgoing": "//@SAElements.2/@modes.0/@behaviouralElements.4",
+            "dataRecipient": "",
+            "fromMessagePorts": "//@SAElements.2/@ports.1"
+          },
+          {
+            "type": "UnicastSendMessage",
+            "incoming": "//@SAElements.2/@modes.0/@behaviouralElements.10",
+            "dataRecipient": ""
+          },
+          {
+            "type": "Actuate",
+            "name": "",
+            "incoming": [
+              "//@SAElements.2/@modes.0/@behaviouralElements.9",
+              "//@SAElements.2/@modes.0/@behaviouralElements.11"
+            ],
+            "data": "Door Lock Actuvator"
+          },
+          {
+            "type": "StartTimer",
+            "name": "openTimer",
+            "incoming": "//@SAElements.2/@modes.0/@behaviouralElements.12",
+            "cyclic": true,
+            "period": 10000
+          }
+        ],
+        "connectionsInternal": [
+          {
+            "from": "//@SAElements.2/@modes.0/@behaviouralElements.3",
+            "to": "//@SAElements.2/@modes.0/@behaviouralElements.2",
+            "condition": "msg==\"Active\""
+          },
+          {
+            "from": "//@SAElements.2/@modes.0/@behaviouralElements.0",
+            "to": "//@SAElements.2/@modes.0/@behaviouralElements.1"
+          },
+          {
+            "from": "//@SAElements.2/@modes.0/@behaviouralElements.1",
+            "to": "//@SAElements.2/@modes.0/@behaviouralElements.7",
+            "condition": "disable"
+          },
+          {
+            "from": "//@SAElements.2/@modes.0/@behaviouralElements.1",
+            "to": "//@SAElements.2/@modes.0/@behaviouralElements.6",
+            "condition": "msg=\"welcomeMSG\""
+          },
+          {
+            "from": "//@SAElements.2/@modes.0/@behaviouralElements.2",
+            "to": "//@SAElements.2/@modes.0/@behaviouralElements.7",
+            "condition": "enable"
+          },
+          {
+            "from": "//@SAElements.2/@modes.0/@behaviouralElements.2",
+            "to": "//@SAElements.2/@modes.0/@behaviouralElements.8",
+            "condition": ""
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "from": "c1.out_0",
+        "to": "c2.in_0"
+      },
+      {
+        "from": "c3.out_0",
+        "to": "c2.in_0"
+      },
+      {
+        "from": "c1.out_1",
+        "to": "c3.in_0"
+      }
+    ],
+    "metadata": {
+      "system": "Sensor → Controller → Server → Sink",
+      "generatedFor": "PyDEVS",
+      "timestamp": "auto-generated"
+    }
+  }
