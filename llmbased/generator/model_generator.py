@@ -222,14 +222,16 @@ def generate_timers_init(timers):
 def generate_ext_transition(behaviors, role, component=None):
     """Generate extTransition method"""
     if role == "sensor":
-        return "        print(f\"[{self.name}] extTransition called with inputs: {inputs}\")\n        return self.state"
+        # return "        print(f\"[{self.name}] extTransition called with inputs: {inputs}\")\n        return self.state"
+        return "        print(f\"extTransition called\")\n        return self.state"
     
     ext_code = ["        received_data = None"]
     
     # Process received data
     ext_code.append("        for port_name, port_value in inputs.items():")
-    ext_code.append("            print(f\"[{self.name}] Received data on {port_name}: {port_value}\")")
-    ext_code.append("            received_data = port_value")
+    # ext_code.append("            print(f\"[{self.name}] Received data on {port_name}: {port_value}\")")
+    # ext_code.append("            received_data = port_value")
+    ext_code.append("            received_data")
     
     # For actuators, handle input generically
     if role == "actuator":
@@ -287,7 +289,7 @@ def generate_ext_transition(behaviors, role, component=None):
         ext_code.append("                    try:")
         ext_code.append("                        value = float(parts[2].strip())")
         ext_code.append("                        self.state.received_value = value")
-        ext_code.append("                        print(f\"[{self.name}] Processing value: {value}\")")
+        ext_code.append("                        #print(f\"[{self.name}] Processing value: {value}\")")
         
         # Extract conditions from component if available
         if component and 'connectionsInternal' in component:
@@ -398,7 +400,7 @@ def generate_controller_code(component, json_model):
             f"                            self.state.{cond['dataRecipient']} = True\n"
             f"                            self.state.data_to_send = received_data\n"
             f"                            self.state.output_port = \"{cond['port']}\"\n"
-            f"                            print(f\"[{{self.name}}] {cond['left']} {{value}} {cond['operator']} {cond['right']}: Sending to {cond['to']}\")"
+            f"                            #print(f\"[{{self.name}}] {cond['left']} {{value}} {cond['operator']} {cond['right']}: Sending to {cond['to']}\")"
         )
     
     if condition_code:
@@ -479,7 +481,7 @@ class {component['name']}(AtomicDEVS):
         \"\"\"Handle external transition\"\"\"
         received_data = None
         for port_name, port_value in inputs.items():
-            print(f"[{self.name}] Received data on {port_name}: {port_value}")
+            #print(f"[{self.name}] Received data on {port_name}: {port_value}")
             received_data = port_value
             
         # Process data for controller
@@ -498,7 +500,7 @@ class {component['name']}(AtomicDEVS):
     for var in condition_variables:
         controller_code += f"                        self.state.{var} = value  # Store in condition variable\n"
 
-    controller_code += f"""                        print(f"[{{self.name}}] Processing value: {{value}}")
+    controller_code += f"""                        #print(f"[{{self.name}}] Processing value: {{value}}")
                         
                         # Apply model-defined conditions
 """
@@ -508,7 +510,8 @@ class {component['name']}(AtomicDEVS):
     # Complete the class with remaining methods
     controller_code += """
                     except (ValueError, IndexError):
-                        print(f"[{self.name}] Error parsing value from: {content}")
+                        #print(f"Error parsing value from: {content}")
+                        print("Error parsing value")
         return self.state
 
     def outputFnc(self):
@@ -592,3 +595,177 @@ def save_model_json(model_json, output_path):
     
     print(f"Model JSON saved to: {output_path}")
     return output_path
+
+def save_connections_json(model_json, output_path):
+    """
+    Extract and save connections information to a separate JSON file
+    
+    Args:
+        model_json: The complete model JSON
+        output_path: Path where to save the connections file
+    
+    Returns:
+        The path where the connections file was saved
+    """
+    import json
+    import os
+    
+    # Create directory if it doesn't exist
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    
+    # Extract connections from the model
+    connections = model_json.get('connections', [])
+    
+    # Create enhanced connections with component names
+    enhanced_connections = []
+    components = {comp['id']: comp for comp in model_json.get('components', [])}
+    
+    for conn in connections:
+        source_parts = conn['from'].split('.')
+        target_parts = conn['to'].split('.')
+        
+        source_id = source_parts[0]
+        source_port = source_parts[1]
+        source_name = components.get(source_id, {}).get('name', source_id)
+        
+        target_id = target_parts[0]
+        target_port = target_parts[1]
+        target_name = components.get(target_id, {}).get('name', target_id)
+        
+        enhanced_connections.append({
+            "from": conn['from'],
+            "to": conn['to'],
+            "source": {
+                "id": source_id,
+                "name": source_name,
+                "port": source_port,
+                "role": components.get(source_id, {}).get('role', 'unknown')
+            },
+            "target": {
+                "id": target_id,
+                "name": target_name,
+                "port": target_port,
+                "role": components.get(target_id, {}).get('role', 'unknown')
+            }
+        })
+    
+    connections_json = {
+        "connections": enhanced_connections,
+        "summary": f"Total connections: {len(enhanced_connections)}"
+    }
+    
+    # Save the connections JSON
+    with open(output_path, 'w') as f:
+        json.dump(connections_json, f, indent=2)
+    
+    print(f"Connections JSON saved to: {output_path}")
+    return output_path
+
+def generate_all_files(model_json, output_dir):
+    """
+    Generate all necessary files from the model JSON
+    
+    Args:
+        model_json: The complete model JSON
+        output_dir: Directory where to save all generated files
+    
+    Returns:
+        A list of paths to all generated files
+    """
+    import os
+    import json
+    
+    # Create output directory if it doesn't exist
+    os.makedirs(output_dir, exist_ok=True)
+    
+    generated_files = []
+    
+    # Save the model JSON first
+    model_json_path = os.path.join(output_dir, "model.json")
+    save_model_json(model_json, model_json_path)
+    generated_files.append(model_json_path)
+    
+    # Save connections JSON
+    connections_json_path = os.path.join(output_dir, "connections.json")
+    save_connections_json(model_json, connections_json_path)
+    generated_files.append(connections_json_path)
+    
+    # Generate component Python files
+    components = model_json.get('components', [])
+    component_files = []
+    
+    for component in components:
+        component_name = component['name']
+        component_id = component['id']
+        component_role = component.get('role', 'unknown')
+        
+        # Create a safe filename
+        filename = f"{component_name.lower().replace(' ', '_')}.py"
+        file_path = os.path.join(output_dir, filename)
+        
+        # Generate the component code
+        component_code = generate_component_class(component, model_json)
+        
+        # Save to file
+        with open(file_path, 'w') as f:
+            f.write(component_code)
+        
+        print(f"Generated {component_role} component: {file_path}")
+        generated_files.append(file_path)
+        component_files.append(component_name.lower().replace(' ', '_'))
+    
+    # Generate the coupled model
+    coupled_model_code = generate_coupled_model(model_json, component_files)
+    coupled_model_path = os.path.join(output_dir, "coupled_model.py")
+    
+    with open(coupled_model_path, 'w') as f:
+        f.write(coupled_model_code)
+    
+    print(f"Generated coupled model: {coupled_model_path}")
+    generated_files.append(coupled_model_path)
+    
+    # Create a simple run script
+    run_script = """from pypdevs.simulator import Simulator
+from coupled_model import GeneratedModel
+import os
+
+# Create the model
+model = GeneratedModel()
+
+# Create the simulator
+sim = Simulator(model)
+
+# Configure simulation parameters
+sim.setTerminationTime(100)  # Run for 100 time units
+sim.setClassicDEVS()
+
+# Run the simulation
+sim.simulate()
+
+print("Simulation complete!")
+"""
+    
+    run_script_path = os.path.join(output_dir, "run_simulation.py")
+    with open(run_script_path, 'w') as f:
+        f.write(run_script)
+    
+    print(f"Generated run script: {run_script_path}")
+    generated_files.append(run_script_path)
+    
+    return generated_files
+
+# Example usage:
+# if __name__ == "__main__":
+#     import sys
+#     import json
+#     
+#     if len(sys.argv) > 2:
+#         model_file = sys.argv[1]
+#         output_dir = sys.argv[2]
+#         
+#         with open(model_file, 'r') as f:
+#             model_json = json.load(f)
+#         
+#         generate_all_files(model_json, output_dir)
+#     else:
+#         print("Usage: python model_generator.py <model_json_file> <output_directory>")
