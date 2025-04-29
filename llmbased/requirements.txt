@@ -1,0 +1,9 @@
+# Google API integration
+google-generativeai
+
+# Utilities
+python-dotenv
+requests
+
+# PyDEVS dependency (required but installed separately)
+# pypdevs
