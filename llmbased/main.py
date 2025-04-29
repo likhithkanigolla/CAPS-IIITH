@@ -259,6 +259,102 @@ def run_parser(folder_path):
         print("Parser did not create expected output file")
         return False
 
+def generate_web_pages(folder_path):
+    """Generate web pages from the parsed output"""
+    print(f"Generating web pages for: {folder_path}")
+    
+    # Ensure we have the absolute path to the folder
+    folder_path = os.path.abspath(folder_path)
+    
+    # First check if model.json exists in the folder
+    model_json_path = os.path.join(folder_path, "model.json")
+    if not os.path.exists(model_json_path):
+        print(f"Error: model.json not found at {model_json_path}")
+        
+        # Look for any JSON file in the folder
+        json_files = [f for f in os.listdir(folder_path) if f.endswith('.json')]
+        if json_files:
+            source_json = os.path.join(folder_path, json_files[0])
+            print(f"Found alternative JSON file: {source_json}")
+            try:
+                shutil.copy2(source_json, model_json_path)
+                print(f"Copied {source_json} to {model_json_path}")
+            except Exception as e:
+                print(f"Error copying JSON file: {e}")
+                return False
+        else:
+            print(f"No JSON files found in {folder_path}")
+            return False
+    
+    # Get the path to the web generator script
+    webgenerator_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web", "web_generator.py")
+    if not os.path.exists(webgenerator_script):
+        print(f"Error: web_generator.py not found at {webgenerator_script}")
+        return False
+    
+    # Create a copy of the model.json file for the web generator to use
+    web_model_json = os.path.join(folder_path, "model.json")
+    
+    # Run the web generator script with absolute paths
+    print(f"Running web generator on: {web_model_json}")
+    
+    # Execute the web generator script
+    cmd = [
+        sys.executable,  # Python executable
+        webgenerator_script,  # Path to the web generator script
+        web_model_json,  # Path to model.json
+        "--output-dir",  # Use output-dir option
+        folder_path  # Output to the same folder
+    ]
+    
+    print(f"Executing command: {' '.join(cmd)}")
+    
+    # Run the command
+    try:
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True
+        )
+        
+        print("Web generator output:")
+        print(result.stdout)
+        
+        if result.stderr:
+            print("Web generator errors:")
+            print(result.stderr)
+    except Exception as e:
+        print(f"Error executing web generator: {e}")
+        return False
+    
+    # Check if web files were generated (using the correct filenames from web_generator.py)
+    html_path = os.path.join(folder_path, "template.html") 
+    css_path = os.path.join(folder_path, "template-styles.css")
+    js_path = os.path.join(folder_path, "template-script.js")
+    
+    # Check files directly
+    html_exists = os.path.exists(html_path)
+    css_exists = os.path.exists(css_path)
+    js_exists = os.path.exists(js_path)
+    
+    print(f"Checking generated files:")
+    print(f"- HTML file: {html_path} exists: {html_exists}")
+    print(f"- CSS file: {css_path} exists: {css_exists}")
+    print(f"- JS file: {js_path} exists: {js_exists}")
+    
+    if html_exists and css_exists and js_exists:
+        print(f"Web pages successfully generated for: {folder_path}")
+        return True
+    else:
+        # If template.html wasn't created, look for any HTML files that might have been generated
+        html_files = [f for f in os.listdir(folder_path) if f.endswith('.html')]
+        if html_files:
+            print(f"Found alternate HTML files: {html_files}")
+            return True
+        
+        print(f"Web pages generation failed.")
+        return False
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python main.py <capssaml_file_path> [output_directory] [system_instructions_path]")
@@ -277,6 +373,8 @@ if __name__ == "__main__":
         
         # Run the parser on the generated data
         run_parser(generated_folder)
+        
+         # Generate web pages from the parsed output
+        generate_web_pages(generated_folder)
     else:
         print(f"Error: {generated_folder} not found.")
-    
