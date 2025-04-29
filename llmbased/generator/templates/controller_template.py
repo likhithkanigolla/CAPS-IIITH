@@ -46,7 +46,7 @@ class {{ component_name }}(AtomicDEVS):
         """Handle external transition"""
         received_data = None
         for port_name, port_value in inputs.items():
-            print(f"[{self.name}] Received data on {port_name}: {port_value}")
+            #print(f"[{self.name}] Received data on {port_name}: {port_value}")
             received_data = port_value
             
         # Process data for controller
@@ -65,7 +65,8 @@ class {{ component_name }}(AtomicDEVS):
                         {{ condition_logic }}
                             
                     except (ValueError, IndexError):
-                        print(f"[{self.name}] Error parsing value from: {content}")
+                        #print(f"[{self.name}] Error parsing value from: {content}")
+                        print("Error Parsing the value")
         return self.state
 
     def outputFnc(self):

@@ -44,17 +44,17 @@ class {component['name'].replace(' ', '')}(AtomicDEVS):
             first_inport = component['in_ports'][0]
             f.write(f"""
         received_command = inputs[self.inport{first_inport}]
-        print(f"[{{self.name}}] Received command: {{received_command}}")
+        #print(f"[{{self.name}}] Received command: {{received_command}}")
         
         if isinstance(received_command, dict) and 'processed' in received_command:
             self.state.actuator_state = not self.state.actuator_state
-            print(f"[{{self.name}}] Actuator state changed to: {{self.state.actuator_state}}")
+            #print(f"[{{self.name}}] Actuator state changed to: {{self.state.actuator_state}}")
         else:
             try:
                 self.state.actuator_state = bool(received_command)
-                print(f"[{{self.name}}] Actuator state set to: {{self.state.actuator_state}}")
+                #print(f"[{{self.name}}] Actuator state set to: {{self.state.actuator_state}}")
             except:
-                print(f"[{{self.name}}] Received invalid command format")
+                print("Received invalid command format")
         
         self.state.processing_time = self.timeLast + self.simulated_delay""")
         else:
@@ -115,7 +115,7 @@ class {component['name'].replace(' ', '')}(AtomicDEVS):
             first_inport = component['in_ports'][0]
             f.write(f"""
         self.state.last_data = inputs[self.inport{first_inport}]
-        print(f"[{{self.name}}] Received data: {{self.state.last_data}}")
+        #print(f"[{{self.name}}] Received data: {{self.state.last_data}}")
         
         if isinstance(self.state.last_data, dict):
             try:
@@ -131,15 +131,15 @@ class {component['name'].replace(' ', '')}(AtomicDEVS):
                 
                 if data_value > self.state.threshold_high:
                     self.state.decision = "open"
-                    print(f"[{{self.name}}] Decision: OPEN (value {{data_value}} > threshold {{self.state.threshold_high}})")
+                    #print(f"[{{self.name}}] Decision: OPEN (value {{data_value}} > threshold {{self.state.threshold_high}})")
                 elif data_value < self.state.threshold_low:
                     self.state.decision = "close"
-                    print(f"[{{self.name}}] Decision: CLOSE (value {{data_value}} < threshold {{self.state.threshold_low}})")
+                    #print(f"[{{self.name}}] Decision: CLOSE (value {{data_value}} < threshold {{self.state.threshold_low}})")
                 else:
                     self.state.decision = None
-                    print(f"[{{self.name}}] Decision: No action needed ({{self.state.threshold_low}} <= {{data_value}} <= {{self.state.threshold_high}})")
+                    #print(f"[{{self.name}}] Decision: No action needed ({{self.state.threshold_low}} <= {{data_value}} <= {{self.state.threshold_high}})")
             except Exception as e:
-                print(f"[{{self.name}}] Error processing data: {{str(e)}}")
+                #print(f"[{{self.name}}] Error processing data: {{str(e)}}")
                 self.state.decision = None""")
         else:
             f.write("\n        # No input ports defined")
@@ -251,11 +251,11 @@ class {component['name'].replace(' ', '')}(AtomicDEVS):
         }}
 
     def timeAdvance(self):
-        print(f"[{{self.name}}] timeAdvance called. Next reading time: {{self.state.next_reading_time}}, timeLast: {{self.timeLast}}")
+        #print(f"[{{self.name}}] timeAdvance called. Next reading time: {{self.state.next_reading_time}}, timeLast: {{self.timeLast}}")
         return self.state.next_reading_time - self.timeLast if self.state.data_to_send else INFINITY
 
     def intTransition(self):
-        print(f"[{{self.name}}] intTransition called.")
+        #print(f"[{{self.name}}] intTransition called.")
         self.timeLast = self.state.next_reading_time 
         self.state.next_reading_time = self.timeLast + self.data_interval 
         
@@ -272,7 +272,7 @@ class {component['name'].replace(' ', '')}(AtomicDEVS):
         return self.state
 
     def extTransition(self, inputs):
-        print(f"[{{self.name}}] extTransition called with inputs: {{inputs}}")
+        #print(f"[{{self.name}}] extTransition called with inputs: {{inputs}}")
         self.state.next_reading_time = self.timeLast + self.data_interval
         return self.state
 
@@ -287,7 +287,7 @@ class {component['name'].replace(' ', '')}(AtomicDEVS):
                  "con": f"{{self.state.sensor_id}}, {{int(time.time())}}, {{{value_generator}}}",
             }}
         }}
-        print(f"[{{self.name}}] outputFnc called. Sending data: {{data}}")""")
+        #print(f"[{{self.name}}] outputFnc called. Sending data: {{data}}")""")
         
         if component['out_ports']:
             first_outport = component['out_ports'][0]
