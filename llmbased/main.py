@@ -5,6 +5,7 @@ import shutil
 import tempfile
 import re
 import datetime
+import subprocess
 from pathlib import Path
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
@@ -197,6 +198,23 @@ def process_capssaml_file(capssaml_file_path, output_dir=None, system_instructio
     print(f"\nComplete! PyDEVS model generated successfully in: {pydevs_output_dir}")
     return pydevs_output_dir
 
+def run_experiment(script_path):
+    print(f"Running generated script: {script_path}")
+    experiment_file = os.path.join(script_path, "experiment.py")
+    
+    # Run experiment.py in its own directory
+    result = subprocess.run(
+        ["/Users/likhithkanigolla/IIITH/MS/S1-Course/IS/venv/bin/python", "experiment.py"], 
+        capture_output=True, 
+        text=True,
+        cwd=script_path  # Set the working directory to where the generated files are
+    )
+    
+    print("Output:")
+    print(result.stdout)
+    if result.stderr:
+        print("Errors:")
+        print(result.stderr)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -208,4 +226,10 @@ if __name__ == "__main__":
     system_instructions = sys.argv[3] if len(sys.argv) > 3 else None
     
     # Process the file through the entire pipeline
-    process_capssaml_file(capssaml_file, output_dir, system_instructions)
+    generated_folder=process_capssaml_file(capssaml_file, output_dir, system_instructions)
+    print(f"Generated files are located in: {generated_folder}")
+    if os.path.exists(generated_folder):
+        run_experiment(generated_folder)
+    else:
+        print(f"Error: {generated_folder} not found.")
+    
