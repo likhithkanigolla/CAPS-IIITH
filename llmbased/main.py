@@ -215,6 +215,49 @@ def run_experiment(script_path):
     if result.stderr:
         print("Errors:")
         print(result.stderr)
+        
+def run_parser(folder_path):
+    """Run the parser on the generated folder"""
+    # Construct paths to required files
+    model_json_path = os.path.join(folder_path, "model.json")
+    log_file_path = os.path.join(folder_path, "simulation.log")
+    
+    # Verify files exist
+    if not os.path.exists(model_json_path):
+        print(f"Error: model.json not found at {model_json_path}")
+        return False
+        
+    if not os.path.exists(log_file_path):
+        print(f"Error: simulation.log not found at {log_file_path}")
+        return False
+    
+    # Get the absolute path to the parser script
+    parser_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "parser", "parser.py")
+    
+    # Run the parser as a subprocess
+    print(f"Running parser on: {folder_path}")
+    result = subprocess.run(
+        [sys.executable, parser_script, folder_path],
+        capture_output=True,
+        text=True
+    )
+    
+    print("Parser output:")
+    print(result.stdout)
+    
+    if result.stderr:
+        print("Parser errors:")
+        print(result.stderr)
+        return False
+    
+    # Check if parsed_output.csv was created
+    output_csv = os.path.join(folder_path, "parsed_output.csv")
+    if os.path.exists(output_csv):
+        print(f"Successfully created: {output_csv}")
+        return True
+    else:
+        print("Parser did not create expected output file")
+        return False
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -229,7 +272,11 @@ if __name__ == "__main__":
     generated_folder=process_capssaml_file(capssaml_file, output_dir, system_instructions)
     print(f"Generated files are located in: {generated_folder}")
     if os.path.exists(generated_folder):
+        # Run the experiment
         run_experiment(generated_folder)
+        
+        # Run the parser on the generated data
+        run_parser(generated_folder)
     else:
         print(f"Error: {generated_folder} not found.")
     
