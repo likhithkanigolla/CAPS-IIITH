@@ -89,9 +89,9 @@ def generate_json(input_file_path, output_json_path=None, system_instructions_pa
 
     # Create the model instance
     model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash-lite",
+        model_name="gemini-2.0-flash",
         generation_config={
-            "temperature": 0.2,  # Lower temperature for more consistent output
+            "temperature": 1,  # Lower temperature for more consistent output
             "response_mime_type": "text/plain"
         },
         safety_settings={

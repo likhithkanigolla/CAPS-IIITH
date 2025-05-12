@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <components:SoftwareArchitecture xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:components="components">
-  <SAElements xsi:type="components:Component">
+  <SAElements xsi:type="components:Component" name="DoorLockSensor">
     <ports xsi:type="components:OutMessagePort"/>
     <ports xsi:type="components:OutMessagePort"/>
     <modes name="orient mode">
@@ -37,7 +37,7 @@
       <exits incoming="//@SAElements.0/@modes.2/@behaviouralElements.5" targetMode="//@SAElements.0/@modes.0/@entries.0"/>
     </modes>
   </SAElements>
-  <SAElements xsi:type="components:Component">
+  <SAElements xsi:type="components:Component" name="DoorLockActuator">
     <ports xsi:type="components:InMessagePort"/>
     <modes name="updating">
       <behaviouralElements xsi:type="components:ReceiveMessage" outgoing="//@SAElements.1/@modes.0/@behaviouralElements.2" dataRecipientName="msg"/>
@@ -45,7 +45,7 @@
       <behaviouralElements xsi:type="components:Link" source="//@SAElements.1/@modes.0/@behaviouralElements.0" target="//@SAElements.1/@modes.0/@behaviouralElements.1"/>
     </modes>
   </SAElements>
-  <SAElements xsi:type="components:Component">
+  <SAElements xsi:type="components:Component" name="Controller">
     <ports xsi:type="components:OutMessagePort"/>
     <ports xsi:type="components:InMessagePort"/>
     <modes name="Execute openDoor">
