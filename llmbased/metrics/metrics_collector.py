@@ -37,11 +37,9 @@ class MetricsCollector:
         # Find the simulation script
         sim_script = os.path.join(model_dir, "experiment.py")
         if not os.path.exists(sim_script):
-            sim_script = os.path.join(model_dir, "experiment.py")
-            if not os.path.exists(sim_script):
-                print(f"Error: Simulation script not found in {model_dir}")
-                print(f"Searched for: {os.path.join(model_dir, 'experiment.py')} and {os.path.join(model_dir, 'experiment.py')}")
-                return None
+            print(f"Error: Simulation script not found in {model_dir}")
+            print(f"Searched for: {sim_script}")
+            return None
         
         print(f"Using simulation script: {sim_script}")
         
