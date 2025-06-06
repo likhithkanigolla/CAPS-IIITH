@@ -1,0 +1,184 @@
+{
+  "simulation_metrics": [
+    {
+      "model_dir": "pydevs_SCUNA_20250513_050254",
+      "model_name": "pydevs_SCUNA_20250513_050254",
+      "iterations": 20,
+      "avg_runtime_seconds": 0.09392213821411133,
+      "avg_memory_usage_mb": 0.010562500000000002,
+      "details": [
+        {
+          "iteration": 1,
+          "runtime_seconds": 0.09421515464782715,
+          "memory_usage_mb": 0.015625,
+          "success": true
+        },
+        {
+          "iteration": 2,
+          "runtime_seconds": 0.0851278305053711,
+          "memory_usage_mb": 0.015625,
+          "success": true
+        },
+        {
+          "iteration": 3,
+          "runtime_seconds": 0.08370208740234375,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 4,
+          "runtime_seconds": 0.08844327926635742,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 5,
+          "runtime_seconds": 0.09320592880249023,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 6,
+          "runtime_seconds": 0.09644603729248047,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 7,
+          "runtime_seconds": 0.09593605995178223,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 8,
+          "runtime_seconds": 0.09312891960144043,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 9,
+          "runtime_seconds": 0.09389710426330566,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 10,
+          "runtime_seconds": 0.09409523010253906,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 11,
+          "runtime_seconds": 0.0938260555267334,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 12,
+          "runtime_seconds": 0.09715580940246582,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 13,
+          "runtime_seconds": 0.1026010513305664,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 14,
+          "runtime_seconds": 0.09812402725219727,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 15,
+          "runtime_seconds": 0.09418773651123047,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 16,
+          "runtime_seconds": 0.09432506561279297,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 17,
+          "runtime_seconds": 0.0965280532836914,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 18,
+          "runtime_seconds": 0.0929880142211914,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 19,
+          "runtime_seconds": 0.09426712989807129,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 20,
+          "runtime_seconds": 0.09624218940734863,
+          "memory_usage_mb": 0.01,
+          "success": true
+        }
+      ],
+      "timestamp": "2025-05-13 05:03:52"
+    }
+  ],
+  "code_generation_stats": [
+    {
+      "model_dir": "pydevs_SCUNA_20250513_050254",
+      "model_name": "pydevs_SCUNA_20250513_050254",
+      "atomic_devs_count": 9,
+      "coupled_devs_count": 3,
+      "total_files": 6,
+      "total_lines": 302,
+      "files_breakdown": [
+        {
+          "filename": "controller.py",
+          "lines": 70,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "simulate.py",
+          "lines": 40,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "model.py",
+          "lines": 27,
+          "atomic_devs": 0,
+          "coupled_devs": 3
+        },
+        {
+          "filename": "experiment.py",
+          "lines": 39,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "doorlocksensor.py",
+          "lines": 66,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "doorlockactuator.py",
+          "lines": 60,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        }
+      ],
+      "timestamp": "2025-05-13 05:03:52"
+    }
+  ],
+  "llm_processing_time": []
+}

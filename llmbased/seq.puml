@@ -1,0 +1,77 @@
+@startuml
+skinparam sequenceArrowThickness 2
+skinparam sequenceGroupBorderThickness 1
+skinparam noteBorderThickness 1
+skinparam sequenceMessageAlignment center
+skinparam BoxPadding 10
+
+actor User
+participant "CAPSSAML\nModel" as CAPSSAML
+participant "LLM Parser" as LLM
+participant "JSON Model" as JSON
+participant "PyDEVS\nGenerator" as Generator
+participant "PyDEVS\nRunTime" as Simulator
+participant "Simulation\nParser" as Parser
+participant "Web\nVisualizer" as WebViz
+
+User -> CAPSSAML: Create CAPSSAML model
+activate CAPSSAML
+
+group CAPSSAML to JSON Conversion
+    CAPSSAML -> LLM: Input CAPSSAML text
+    activate LLM
+    LLM -> JSON: Generate structured JSON
+    deactivate CAPSSAML
+    deactivate LLM
+    activate JSON
+end
+
+group PyDEVS Model Generation
+    JSON -> Generator: Model configuration
+    activate Generator
+    deactivate JSON
+    Generator --> Generator: Generate atomic components\n(sensor, controller, actuator)
+    Generator --> Generator: Generate coupled model
+    Generator --> Generator: Generate simulation scripts
+    Generator -> Simulator: Supply generated code
+    deactivate Generator
+    activate Simulator
+end
+
+group Simulation Execution
+    activate Simulator
+    Simulator --> Simulator: Initialize model
+    Simulator --> Simulator: Connect ports
+    Simulator --> Simulator: Run simulation
+    Simulator --> Simulator: Log state transitions
+    Simulator -> Parser: Output simulation log
+    deactivate Simulator
+    activate Parser
+end
+
+group Visualization Preparation
+    activate Parser
+    Parser --> Parser: Extract events
+    Parser --> Parser: Create csv output
+    Parser -> WebViz: Component & message data
+    deactivate Parser
+    activate WebViz
+end
+
+group Web Visualization
+    activate WebViz
+    WebViz --> WebViz: Generate Web Files
+    User -> WebViz: Start Web Server
+    WebViz -> User: Interactive visualization
+    deactivate WebViz
+end
+
+note right of User
+  User can interact with visualization:
+  - View component diagram
+  - Start/stop simulation
+  - Watch message flow
+  - Observe state changes
+end note
+
+@enduml

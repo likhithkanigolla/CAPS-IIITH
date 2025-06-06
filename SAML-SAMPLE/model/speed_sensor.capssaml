@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components:SoftwareArchitecture xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:components="components">
+  <SAElements xsi:type="components:Component" name="SpeedSensor">
+    <modes xsi:type="components:InitialMode">
+      <behaviouralElements xsi:type="components:StartTimer" name="SpeedTimer" cyclic="true" period="1"/>
+      <behaviouralElements xsi:type="components:TimerFired" outgoing="//@SAElements.0/@modes.0/@behaviouralElements.4"/>
+      <behaviouralElements xsi:type="components:SenseAccelerometer" name="Sense Speed" outgoing="//@SAElements.0/@modes.0/@behaviouralElements.5" incoming="//@SAElements.0/@modes.0/@behaviouralElements.4" dataDeclarationName="" data="" dataRecipient="//@SAElements.0/@applicationData.0"/>
+      <behaviouralElements xsi:type="components:UnicastSendMessage" name="SpeedValue" incoming="//@SAElements.0/@modes.0/@behaviouralElements.5" data="Speed" dataRecipient="//@SAElements.0/@applicationData.0"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.0/@modes.0/@behaviouralElements.1" target="//@SAElements.0/@modes.0/@behaviouralElements.2"/>
+      <behaviouralElements xsi:type="components:Link" source="//@SAElements.0/@modes.0/@behaviouralElements.2" target="//@SAElements.0/@modes.0/@behaviouralElements.3"/>
+    </modes>
+    <applicationData xsi:type="components:PrimitiveDataDeclaration" dataName="Speed" value="10"/>
+  </SAElements>
+</components:SoftwareArchitecture>

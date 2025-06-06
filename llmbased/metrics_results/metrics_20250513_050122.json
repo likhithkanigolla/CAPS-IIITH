@@ -1,0 +1,87 @@
+{
+  "simulation_metrics": [
+    {
+      "model_dir": "pydevs_MotionLight_20250513_050129",
+      "model_name": "pydevs_MotionLight_20250513_050129",
+      "iterations": 1,
+      "avg_runtime_seconds": 0.17458415031433105,
+      "avg_memory_usage_mb": 0.0625,
+      "details": [
+        {
+          "iteration": 1,
+          "runtime_seconds": 0.17458415031433105,
+          "memory_usage_mb": 0.0625,
+          "success": true
+        }
+      ],
+      "timestamp": "2025-05-13 05:01:33"
+    }
+  ],
+  "code_generation_stats": [
+    {
+      "model_dir": "pydevs_MotionLight_20250513_050129",
+      "model_name": "pydevs_MotionLight_20250513_050129",
+      "atomic_devs_count": 9,
+      "coupled_devs_count": 3,
+      "total_files": 6,
+      "total_lines": 337,
+      "files_breakdown": [
+        {
+          "filename": "light.py",
+          "lines": 65,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "simulate.py",
+          "lines": 40,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "model.py",
+          "lines": 27,
+          "atomic_devs": 0,
+          "coupled_devs": 3
+        },
+        {
+          "filename": "experiment.py",
+          "lines": 39,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "motionsensor.py",
+          "lines": 76,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "router.py",
+          "lines": 90,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        }
+      ],
+      "timestamp": "2025-05-13 05:01:29"
+    }
+  ],
+  "llm_processing_time": [
+    {
+      "task_name": "llm_api_call",
+      "start_time": "2025-05-13 05:01:22",
+      "end_time": "2025-05-13 05:01:29",
+      "elapsed_seconds": 7.661652088165283,
+      "timestamp": "2025-05-13 05:01:29",
+      "tokens_in": 221.0,
+      "tokens_out": 440.7
+    },
+    {
+      "task_name": "generate_json",
+      "start_time": "2025-05-13 05:01:22",
+      "end_time": "2025-05-13 05:01:29",
+      "elapsed_seconds": 7.669472932815552,
+      "timestamp": "2025-05-13 05:01:29"
+    }
+  ]
+}

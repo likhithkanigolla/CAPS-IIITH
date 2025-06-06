@@ -1,0 +1,172 @@
+{
+  "simulation_metrics": [
+    {
+      "model_dir": "pydevs_speed_sensor_20250513_042741",
+      "model_name": "pydevs_speed_sensor_20250513_042741",
+      "iterations": 20,
+      "avg_runtime_seconds": 38.78552497625351,
+      "avg_memory_usage_mb": 0.28574999999999995,
+      "details": [
+        {
+          "iteration": 1,
+          "runtime_seconds": 38.90657591819763,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 2,
+          "runtime_seconds": 38.56186509132385,
+          "memory_usage_mb": 0.34375,
+          "success": true
+        },
+        {
+          "iteration": 3,
+          "runtime_seconds": 38.387425899505615,
+          "memory_usage_mb": 0.46875,
+          "success": true
+        },
+        {
+          "iteration": 4,
+          "runtime_seconds": 40.750553131103516,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 5,
+          "runtime_seconds": 38.6469202041626,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 6,
+          "runtime_seconds": 38.29010891914368,
+          "memory_usage_mb": 0.78125,
+          "success": true
+        },
+        {
+          "iteration": 7,
+          "runtime_seconds": 38.166215896606445,
+          "memory_usage_mb": 0.234375,
+          "success": true
+        },
+        {
+          "iteration": 8,
+          "runtime_seconds": 38.1543288230896,
+          "memory_usage_mb": 0.046875,
+          "success": true
+        },
+        {
+          "iteration": 9,
+          "runtime_seconds": 39.378576040267944,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 10,
+          "runtime_seconds": 38.87933421134949,
+          "memory_usage_mb": 1.359375,
+          "success": true
+        },
+        {
+          "iteration": 11,
+          "runtime_seconds": 38.759745836257935,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 12,
+          "runtime_seconds": 38.31328105926514,
+          "memory_usage_mb": 0.03125,
+          "success": true
+        },
+        {
+          "iteration": 13,
+          "runtime_seconds": 39.40464997291565,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 14,
+          "runtime_seconds": 38.42912793159485,
+          "memory_usage_mb": 0.5,
+          "success": true
+        },
+        {
+          "iteration": 15,
+          "runtime_seconds": 38.42184615135193,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 16,
+          "runtime_seconds": 38.35427713394165,
+          "memory_usage_mb": 0.03125,
+          "success": true
+        },
+        {
+          "iteration": 17,
+          "runtime_seconds": 39.13782811164856,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 18,
+          "runtime_seconds": 38.90442609786987,
+          "memory_usage_mb": 1.125,
+          "success": true
+        },
+        {
+          "iteration": 19,
+          "runtime_seconds": 38.970097064971924,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 20,
+          "runtime_seconds": 38.89331603050232,
+          "memory_usage_mb": 0.703125,
+          "success": true
+        }
+      ],
+      "timestamp": "2025-05-13 04:45:06"
+    }
+  ],
+  "code_generation_stats": [
+    {
+      "model_dir": "pydevs_speed_sensor_20250513_042741",
+      "model_name": "pydevs_speed_sensor_20250513_042741",
+      "atomic_devs_count": 3,
+      "coupled_devs_count": 3,
+      "total_files": 4,
+      "total_lines": 170,
+      "files_breakdown": [
+        {
+          "filename": "simulate.py",
+          "lines": 40,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "model.py",
+          "lines": 15,
+          "atomic_devs": 0,
+          "coupled_devs": 3
+        },
+        {
+          "filename": "experiment.py",
+          "lines": 39,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "speedsensor.py",
+          "lines": 76,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        }
+      ],
+      "timestamp": "2025-05-13 04:45:06"
+    }
+  ],
+  "llm_processing_time": []
+}
