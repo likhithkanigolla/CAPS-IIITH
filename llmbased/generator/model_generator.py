@@ -37,19 +37,40 @@ def generate_time_advance(timers, behaviors):
     
     return chr(10).join(["        " + line for line in time_advance_code])
 
-def generate_output_function(behaviors, role):
-    """Generate outputFnc method"""
+def generate_output_function(behaviors, role, component=None):
+    """Generate outputFnc method with type-aware random value generation"""
     output_code = ["result = {}"]
     
     if role == "sensor":
-        # For sensors, generate sensor data
-        output_code.append("# Generate sensor data")
+        # Default to real number as fallback
+        sensor_type = "real"
+        output_value = "random.uniform(0, 100)"
+        
+        # Extract parameter information if component is provided
+        if component and 'parameters' in component:
+            for param_name, param_info in component['parameters'].items():
+                if 'type' in param_info:
+                    sensor_type = param_info['type'].lower()
+                    print(f"Using parameter '{param_name}' with type '{sensor_type}' for sensor data generation")
+                    break  # Use the first typed parameter we find
+        
+        # Generate appropriate random value based on type
+        if sensor_type == "boolean":
+            output_value = "random.choice([0, 1])"  # Boolean as 0/1
+        elif sensor_type == "int":
+            output_value = "random.randint(0, 100)"  # Integer between 0-100
+        elif sensor_type == "real":
+            output_value = "random.uniform(0, 100)"  # Float between 0-100
+            
+        print(f"Generating {sensor_type} sensor data with value: {output_value}")
+        
+        output_code.append(f"# Generate {sensor_type} sensor data")
         output_code.append("sensor_data = {")
         output_code.append('    "m2m:cin": {')
         output_code.append('        "lbl": [')
         output_code.append('            f"{self.name}"')
         output_code.append('        ],')
-        output_code.append('        "con": f"{self.name}, {int(time.time())}, {random.uniform(0, 100)}"')
+        output_code.append(f'        "con": f"{{self.name}}, {{int(time.time())}}, {{{output_value}}}"')
         output_code.append('    }')
         output_code.append('}')
         output_code.append("# Send to all output ports")
@@ -57,7 +78,7 @@ def generate_output_function(behaviors, role):
         output_code.append("    if port_name.startswith('out_'):")
         output_code.append("        port = getattr(self, port_name)")
         output_code.append("        result[port] = sensor_data")
-    
+        
     elif role == "controller":
         # For controllers, only send to the specified port (not all ports)
         output_code.append("# Process and forward data only to the specified port")
@@ -105,7 +126,7 @@ def generate_component_class(component, json_model=None):
     
     output_function_method = f"""    def outputFnc(self):
         \"\"\"Generate output\"\"\"
-{generate_output_function(behaviors, component_role)}
+{generate_output_function(behaviors, component_role, component)}
 """
     
     # Add comparison method for sorting
@@ -357,9 +378,39 @@ def generate_controller_code(component, json_model):
     for conn in component.get('connectionsInternal', []):
         if 'condition' in conn and conn['condition']:
             condition = conn['condition']
-            left = condition.get('left', '')
-            operator = condition.get('operator', '')
-            right = condition.get('right', '')
+            
+            # Check if condition is a string or a dictionary
+            if isinstance(condition, str):
+                # Parse the string condition (e.g., "if motion==1")
+                if condition.startswith("if "):
+                    condition_text = condition[3:].strip()  # Remove "if " prefix
+                else:
+                    condition_text = condition
+                    
+                # Try to extract left, operator, right parts
+                if "==" in condition_text:
+                    left, right = condition_text.split("==", 1)
+                    operator = "=="
+                elif ">" in condition_text:
+                    left, right = condition_text.split(">", 1)
+                    operator = ">"
+                elif "<" in condition_text:
+                    left, right = condition_text.split("<", 1)
+                    operator = "<"
+                else:
+                    # Default if we can't parse
+                    left = "motion"
+                    operator = "=="
+                    right = "1"
+                    
+                left = left.strip()
+                right = right.strip()
+            else:
+                # The normal case where condition is a dictionary
+                left = condition.get('left', '')
+                operator = condition.get('operator', '')
+                right = condition.get('right', '')
+                
             to_action = conn.get('to', '')
             data_recipient = conn.get('dataRecipient', left)  # Default to left operand if not specified
             
