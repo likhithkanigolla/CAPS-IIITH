@@ -1,0 +1,184 @@
+{
+  "simulation_metrics": [
+    {
+      "model_dir": "pydevs_MotionLight_20250513_045814",
+      "model_name": "pydevs_MotionLight_20250513_045814",
+      "iterations": 20,
+      "avg_runtime_seconds": 0.1792570948600769,
+      "avg_memory_usage_mb": 0.03021875,
+      "details": [
+        {
+          "iteration": 1,
+          "runtime_seconds": 0.16509580612182617,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 2,
+          "runtime_seconds": 0.16995000839233398,
+          "memory_usage_mb": 0.015625,
+          "success": true
+        },
+        {
+          "iteration": 3,
+          "runtime_seconds": 0.1882622241973877,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 4,
+          "runtime_seconds": 0.16443109512329102,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 5,
+          "runtime_seconds": 0.17082810401916504,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 6,
+          "runtime_seconds": 0.18113994598388672,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 7,
+          "runtime_seconds": 0.1874828338623047,
+          "memory_usage_mb": 0.15625,
+          "success": true
+        },
+        {
+          "iteration": 8,
+          "runtime_seconds": 0.18972516059875488,
+          "memory_usage_mb": 0.015625,
+          "success": true
+        },
+        {
+          "iteration": 9,
+          "runtime_seconds": 0.18420982360839844,
+          "memory_usage_mb": 0.09375,
+          "success": true
+        },
+        {
+          "iteration": 10,
+          "runtime_seconds": 0.219865083694458,
+          "memory_usage_mb": 0.09375,
+          "success": true
+        },
+        {
+          "iteration": 11,
+          "runtime_seconds": 0.19356203079223633,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 12,
+          "runtime_seconds": 0.18517208099365234,
+          "memory_usage_mb": 0.0625,
+          "success": true
+        },
+        {
+          "iteration": 13,
+          "runtime_seconds": 0.18435001373291016,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 14,
+          "runtime_seconds": 0.18782281875610352,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 15,
+          "runtime_seconds": 0.18197989463806152,
+          "memory_usage_mb": 0.015625,
+          "success": true
+        },
+        {
+          "iteration": 16,
+          "runtime_seconds": 0.16732382774353027,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 17,
+          "runtime_seconds": 0.15358304977416992,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 18,
+          "runtime_seconds": 0.15873098373413086,
+          "memory_usage_mb": 0.03125,
+          "success": true
+        },
+        {
+          "iteration": 19,
+          "runtime_seconds": 0.16984105110168457,
+          "memory_usage_mb": 0.01,
+          "success": true
+        },
+        {
+          "iteration": 20,
+          "runtime_seconds": 0.18178606033325195,
+          "memory_usage_mb": 0.01,
+          "success": true
+        }
+      ],
+      "timestamp": "2025-05-13 05:00:51"
+    }
+  ],
+  "code_generation_stats": [
+    {
+      "model_dir": "pydevs_MotionLight_20250513_045814",
+      "model_name": "pydevs_MotionLight_20250513_045814",
+      "atomic_devs_count": 9,
+      "coupled_devs_count": 3,
+      "total_files": 6,
+      "total_lines": 337,
+      "files_breakdown": [
+        {
+          "filename": "light.py",
+          "lines": 65,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "simulate.py",
+          "lines": 40,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "model.py",
+          "lines": 27,
+          "atomic_devs": 0,
+          "coupled_devs": 3
+        },
+        {
+          "filename": "experiment.py",
+          "lines": 39,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "motionsensor.py",
+          "lines": 76,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "router.py",
+          "lines": 90,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        }
+      ],
+      "timestamp": "2025-05-13 05:00:51"
+    }
+  ],
+  "llm_processing_time": []
+}

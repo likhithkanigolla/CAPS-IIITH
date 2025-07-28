@@ -1,0 +1,93 @@
+{
+  "simulation_metrics": [
+    {
+      "model_dir": "pydevs_temperature_20250513_044606",
+      "model_name": "pydevs_temperature_20250513_044606",
+      "iterations": 1,
+      "avg_runtime_seconds": 0.09715008735656738,
+      "avg_memory_usage_mb": 0.015625,
+      "details": [
+        {
+          "iteration": 1,
+          "runtime_seconds": 0.09715008735656738,
+          "memory_usage_mb": 0.015625,
+          "success": true
+        }
+      ],
+      "timestamp": "2025-05-13 04:46:07"
+    }
+  ],
+  "code_generation_stats": [
+    {
+      "model_dir": "pydevs_temperature_20250513_044606",
+      "model_name": "pydevs_temperature_20250513_044606",
+      "atomic_devs_count": 12,
+      "coupled_devs_count": 3,
+      "total_files": 7,
+      "total_lines": 384,
+      "files_breakdown": [
+        {
+          "filename": "server.py",
+          "lines": 54,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "controller.py",
+          "lines": 75,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "windowactuator.py",
+          "lines": 65,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "simulate.py",
+          "lines": 40,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "temperaturesensor.py",
+          "lines": 79,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "model.py",
+          "lines": 32,
+          "atomic_devs": 0,
+          "coupled_devs": 3
+        },
+        {
+          "filename": "experiment.py",
+          "lines": 39,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        }
+      ],
+      "timestamp": "2025-05-13 04:46:06"
+    }
+  ],
+  "llm_processing_time": [
+    {
+      "task_name": "llm_api_call",
+      "start_time": "2025-05-13 04:45:56",
+      "end_time": "2025-05-13 04:46:06",
+      "elapsed_seconds": 10.127387285232544,
+      "timestamp": "2025-05-13 04:46:06",
+      "tokens_in": 302.90000000000003,
+      "tokens_out": 560.3000000000001
+    },
+    {
+      "task_name": "generate_json",
+      "start_time": "2025-05-13 04:45:56",
+      "end_time": "2025-05-13 04:46:06",
+      "elapsed_seconds": 10.132838010787964,
+      "timestamp": "2025-05-13 04:46:06"
+    }
+  ]
+}

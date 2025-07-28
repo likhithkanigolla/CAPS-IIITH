@@ -1,0 +1,75 @@
+{
+  "simulation_metrics": [
+    {
+      "model_dir": "pydevs_speed_sensor_20250513_042741",
+      "model_name": "pydevs_speed_sensor_20250513_042741",
+      "iterations": 1,
+      "avg_runtime_seconds": 38.048896074295044,
+      "avg_memory_usage_mb": 0.609375,
+      "details": [
+        {
+          "iteration": 1,
+          "runtime_seconds": 38.048896074295044,
+          "memory_usage_mb": 0.609375,
+          "success": true
+        }
+      ],
+      "timestamp": "2025-05-13 04:28:58"
+    }
+  ],
+  "code_generation_stats": [
+    {
+      "model_dir": "pydevs_speed_sensor_20250513_042741",
+      "model_name": "pydevs_speed_sensor_20250513_042741",
+      "atomic_devs_count": 3,
+      "coupled_devs_count": 3,
+      "total_files": 4,
+      "total_lines": 170,
+      "files_breakdown": [
+        {
+          "filename": "experiment.py",
+          "lines": 40,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "model.py",
+          "lines": 15,
+          "atomic_devs": 0,
+          "coupled_devs": 3
+        },
+        {
+          "filename": "experiment.py",
+          "lines": 39,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "speedsensor.py",
+          "lines": 76,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        }
+      ],
+      "timestamp": "2025-05-13 04:27:41"
+    }
+  ],
+  "llm_processing_time": [
+    {
+      "task_name": "llm_api_call",
+      "start_time": "2025-05-13 04:27:37",
+      "end_time": "2025-05-13 04:27:41",
+      "elapsed_seconds": 3.8278770446777344,
+      "timestamp": "2025-05-13 04:27:41",
+      "tokens_in": 66.3,
+      "tokens_out": 153.4
+    },
+    {
+      "task_name": "generate_json",
+      "start_time": "2025-05-13 04:27:37",
+      "end_time": "2025-05-13 04:27:41",
+      "elapsed_seconds": 3.830475091934204,
+      "timestamp": "2025-05-13 04:27:41"
+    }
+  ]
+}

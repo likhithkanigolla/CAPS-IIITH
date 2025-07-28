@@ -13,6 +13,77 @@ from google.generativeai.types import HarmCategory, HarmBlockThreshold
 # Import generator modules
 from generator.generator import generate_pydevs_model
 
+# Import metrics
+try:
+    from metrics.llm_metrics import time_llm_task, TimeLLMTask, get_metrics_collector
+    METRICS_ENABLED = True
+except ImportError:
+    # Create dummy implementations if metrics module is not available
+    def time_llm_task(task_name=None):
+        def decorator(func):
+            return func
+        return decorator
+    
+    class TimeLLMTask:
+        def __init__(self, *args, **kwargs): pass
+        def __enter__(self): return self
+        def __exit__(self, *args, **kwargs): pass
+        def set_tokens_out(self, *args, **kwargs): pass
+    
+    def get_metrics_collector():
+        return None
+    
+    METRICS_ENABLED = False
+
+# Add function to display metrics summary
+def print_metrics_summary():
+    """Print a summary of collected metrics to the console"""
+    if not METRICS_ENABLED:
+        print("Metrics collection is disabled.")
+        return
+    
+    collector = get_metrics_collector()
+    if not collector or not collector.results:
+        print("No metrics have been collected yet.")
+        return
+    
+    print("\n===== LLM METRICS SUMMARY =====")
+    
+    # Print LLM processing time metrics
+    if "llm_processing_time" in collector.results and collector.results["llm_processing_time"]:
+        print("\nLLM Processing Time:")
+        print(f"{'Task':<30} {'Duration (s)':<15} {'Tokens In':<12} {'Tokens Out':<12}")
+        print("-" * 70)
+        
+        for record in collector.results["llm_processing_time"]:
+            task_name = record.get("task_name", "Unknown")
+            elapsed = record.get("elapsed_seconds", 0)
+            tokens_in = record.get("tokens_in", "N/A")
+            tokens_out = record.get("tokens_out", "N/A")
+            
+            print(f"{task_name:<30} {elapsed:<15.2f} {tokens_in:<12} {tokens_out:<12}")
+    
+    # Print code generation stats if available
+    if "code_generation_stats" in collector.results and collector.results["code_generation_stats"]:
+        print("\nCode Generation Statistics:")
+        for stat in collector.results["code_generation_stats"]:
+            print(f"Model: {stat.get('model_name', 'Unknown')}")
+            print(f"  Files: {stat.get('total_files', 0)}")
+            print(f"  Lines: {stat.get('total_lines', 0)}")
+            print(f"  AtomicDEVS: {stat.get('atomic_devs_count', 0)}")
+            print(f"  CoupledDEVS: {stat.get('coupled_devs_count', 0)}")
+    
+    # Print simulation metrics if available
+    if "simulation_metrics" in collector.results and collector.results["simulation_metrics"]:
+        print("\nSimulation Runtime Metrics:")
+        for metric in collector.results["simulation_metrics"]:
+            print(f"Model: {metric.get('model_name', 'Unknown')}")
+            print(f"  Avg. Runtime: {metric.get('avg_runtime_seconds', 0):.2f} seconds")
+            print(f"  Avg. Memory: {metric.get('avg_memory_usage_mb', 0):.2f} MB")
+    
+    print("\nDetailed metrics saved to:", collector.results_file if hasattr(collector, 'results_file') else "Unknown location")
+    print("=====================================\n")
+
 def read_system_instructions(file_path):
     """Read system instructions from a file"""
     try:
@@ -48,6 +119,7 @@ def extract_json_from_text(text):
     return None
 
 
+@time_llm_task("generate_json")
 def generate_json(input_file_path, output_json_path=None, system_instructions_path=None):
     """
     Generate JSON from a CAPSSAML file using Gemini API
@@ -70,6 +142,10 @@ def generate_json(input_file_path, output_json_path=None, system_instructions_pa
         print(f"Error reading file: {e}")
         return None
     
+    # Count input tokens (approximate)
+    tokens_in = len(input_text.split()) * 1.3  # Rough estimate: 1.3 tokens per word
+    print(f"Input size: approximately {int(tokens_in)} tokens")
+
     # Configure the Gemini API with your API key
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -109,11 +185,26 @@ def generate_json(input_file_path, output_json_path=None, system_instructions_pa
     
     # Generate content
     print("Sending request to Gemini API...")
+    start_time = datetime.datetime.now()
+    print(f"  Started at: {start_time.strftime('%H:%M:%S')}")
+    
     try:
         chat = model.start_chat()
-        response = chat.send_message(
-            f"Parse this CAPSSAML file and return ONLY valid JSON:\n\n{input_text}"
-        )
+        with TimeLLMTask("llm_api_call", tokens_in=tokens_in) as task:
+            response = chat.send_message(
+                f"Parse this CAPSSAML file and return ONLY valid JSON:\n\n{input_text}"
+            )
+            
+            # Estimate output tokens
+            tokens_out = len(response.text.split()) * 1.3  # Rough estimate
+            task.set_tokens_out(tokens_out)
+            
+            # Print completion time
+            end_time = datetime.datetime.now()
+            duration = (end_time - start_time).total_seconds()
+            print(f"  Completed at: {end_time.strftime('%H:%M:%S')}")
+            print(f"  Duration: {duration:.2f} seconds")
+            print(f"  Output size: approximately {int(tokens_out)} tokens")
         
         # Extract only the JSON part from the response
         json_str = response.text
@@ -189,18 +280,40 @@ def process_capssaml_file(capssaml_file_path, output_dir=None, system_instructio
     
     # Step 2: Generate PyDEVS model from JSON
     print("Generating PyDEVS model from JSON...")
+    start_time = datetime.datetime.now()
+    print(f"  Started at: {start_time.strftime('%H:%M:%S')}")
+    
     pydevs_output_dir = generate_pydevs_model(json_file_path, output_dir)
+    
+    end_time = datetime.datetime.now()
+    duration = (end_time - start_time).total_seconds()
+    print(f"  Completed at: {end_time.strftime('%H:%M:%S')}")
+    print(f"  Duration: {duration:.2f} seconds")
     
     # Clean up the temporary txt file if we created one
     if txt_file_path != capssaml_file_path:
         os.remove(txt_file_path)
     
+    # Record metrics at the end if metrics are enabled
+    if METRICS_ENABLED:
+        collector = get_metrics_collector()
+        if collector:
+            collector.collect_code_stats(pydevs_output_dir)
+            collector.generate_visualization_metrics_script(pydevs_output_dir)
+            collector.generate_report()
+            # Print metrics summary
+            print_metrics_summary()
+    
     print(f"\nComplete! PyDEVS model generated successfully in: {pydevs_output_dir}")
     return pydevs_output_dir
 
 def run_experiment(script_path):
+    """Run the experiment script"""
     print(f"Running generated script: {script_path}")
     experiment_file = os.path.join(script_path, "experiment.py")
+    
+    start_time = datetime.datetime.now()
+    print(f"  Started at: {start_time.strftime('%H:%M:%S')}")
     
     # Run experiment.py in its own directory
     result = subprocess.run(
@@ -210,11 +323,27 @@ def run_experiment(script_path):
         cwd=script_path  # Set the working directory to where the generated files are
     )
     
+    end_time = datetime.datetime.now()
+    duration = (end_time - start_time).total_seconds()
+    print(f"  Completed at: {end_time.strftime('%H:%M:%S')}")
+    print(f"  Duration: {duration:.2f} seconds")
+    
     print("Output:")
     print(result.stdout)
     if result.stderr:
         print("Errors:")
         print(result.stderr)
+    
+    # If metrics are enabled, record the simulation run
+    if METRICS_ENABLED:
+        collector = get_metrics_collector()
+        if collector:
+            # Record this simulation run
+            collector.measure_simulation_runtime(script_path, iterations=1)
+            # Print updated metrics
+            print_metrics_summary()
+    
+    return result.returncode == 0
         
 def run_parser(folder_path):
     """Run the parser on the generated folder"""
@@ -360,21 +489,41 @@ if __name__ == "__main__":
         print("Usage: python main.py <capssaml_file_path> [output_directory] [system_instructions_path]")
         sys.exit(1)
     
+    print("=" * 80)
+    print("CAPSSAML to PyDEVS Generator (with Metrics Collection)")
+    print("=" * 80)
+    print(f"Metrics collection: {'ENABLED' if METRICS_ENABLED else 'DISABLED'}")
+    
     capssaml_file = sys.argv[1]
     output_dir = sys.argv[2] if len(sys.argv) > 2 else None
     system_instructions = sys.argv[3] if len(sys.argv) > 3 else None
     
+    start_time = datetime.datetime.now()
+    print(f"Starting process at: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    
     # Process the file through the entire pipeline
-    generated_folder=process_capssaml_file(capssaml_file, output_dir, system_instructions)
+    generated_folder = process_capssaml_file(capssaml_file, output_dir, system_instructions)
     print(f"Generated files are located in: {generated_folder}")
     if os.path.exists(generated_folder):
         # Run the experiment
-        run_experiment(generated_folder)
+        sim_success = run_experiment(generated_folder)
         
         # Run the parser on the generated data
-        run_parser(generated_folder)
+        if sim_success:
+            parser_success = run_parser(generated_folder)
+            
+            # Generate web pages from the parsed output
+            if parser_success:
+                generate_web_pages(generated_folder)
         
-         # Generate web pages from the parsed output
-        generate_web_pages(generated_folder)
+        # Print final metrics summary
+        if METRICS_ENABLED:
+            print("\nFinal Metrics Summary:")
+            print_metrics_summary()
     else:
         print(f"Error: {generated_folder} not found.")
+    
+    end_time = datetime.datetime.now()
+    total_duration = (end_time - start_time).total_seconds()
+    print(f"Total process completed in {total_duration:.2f} seconds")
+    print("=" * 80)

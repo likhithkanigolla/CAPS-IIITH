@@ -1,0 +1,87 @@
+{
+  "simulation_metrics": [
+    {
+      "model_dir": "pydevs_SCUNA_20250513_050254",
+      "model_name": "pydevs_SCUNA_20250513_050254",
+      "iterations": 1,
+      "avg_runtime_seconds": 0.08398795127868652,
+      "avg_memory_usage_mb": 0.03125,
+      "details": [
+        {
+          "iteration": 1,
+          "runtime_seconds": 0.08398795127868652,
+          "memory_usage_mb": 0.03125,
+          "success": true
+        }
+      ],
+      "timestamp": "2025-05-13 05:02:55"
+    }
+  ],
+  "code_generation_stats": [
+    {
+      "model_dir": "pydevs_SCUNA_20250513_050254",
+      "model_name": "pydevs_SCUNA_20250513_050254",
+      "atomic_devs_count": 9,
+      "coupled_devs_count": 3,
+      "total_files": 6,
+      "total_lines": 302,
+      "files_breakdown": [
+        {
+          "filename": "controller.py",
+          "lines": 70,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "simulate.py",
+          "lines": 40,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "model.py",
+          "lines": 27,
+          "atomic_devs": 0,
+          "coupled_devs": 3
+        },
+        {
+          "filename": "experiment.py",
+          "lines": 39,
+          "atomic_devs": 0,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "doorlocksensor.py",
+          "lines": 66,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        },
+        {
+          "filename": "doorlockactuator.py",
+          "lines": 60,
+          "atomic_devs": 3,
+          "coupled_devs": 0
+        }
+      ],
+      "timestamp": "2025-05-13 05:02:54"
+    }
+  ],
+  "llm_processing_time": [
+    {
+      "task_name": "llm_api_call",
+      "start_time": "2025-05-13 05:02:43",
+      "end_time": "2025-05-13 05:02:54",
+      "elapsed_seconds": 11.13500690460205,
+      "timestamp": "2025-05-13 05:02:54",
+      "tokens_in": 362.7,
+      "tokens_out": 705.9
+    },
+    {
+      "task_name": "generate_json",
+      "start_time": "2025-05-13 05:02:43",
+      "end_time": "2025-05-13 05:02:54",
+      "elapsed_seconds": 11.140730857849121,
+      "timestamp": "2025-05-13 05:02:54"
+    }
+  ]
+}
